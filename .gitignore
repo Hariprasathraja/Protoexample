@@ -1,2 +1,3 @@
 **/.class
-/protobuf-java-3.21.12.jar
+.protobuf-java-3.21.12.jar/*
+.vscode/*
