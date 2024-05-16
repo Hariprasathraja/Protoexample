@@ -1,4 +1,4 @@
 *.class
 
-.protobuf-java-3.21.12.jar
+*.jar
 .vscode
