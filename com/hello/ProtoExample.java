@@ -7,12 +7,12 @@ public class ProtoExample {
     public static void main(String[] args) {
         Map<Integer, hellorequest> accountDetails = new HashMap<>();
         hellorequest account1 = hellorequest.newBuilder()
-                                            .setName("John")
+                                            .setName("Name1")
                                             .build();
         accountDetails.put(123456, account1);
 
         hellorequest account2 = hellorequest.newBuilder()
-                                            .setName("Alice")
+                                            .setName("Name2")
                                             .build();
         accountDetails.put(987654, account2);
         System.out.println("Bank Account Details:");
