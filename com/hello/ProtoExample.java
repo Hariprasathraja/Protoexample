@@ -12,12 +12,12 @@ public class ProtoExample {
 
         System.out.print("Enter the number of accounts: ");
         int numAccounts = scanner.nextInt();
-        scanner.nextLine();  // Consume newline
+        scanner.nextLine();
 
         for (int i = 0; i < numAccounts; i++) {
             System.out.print("Enter account number: ");
             int accountNumber = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
+            scanner.nextLine();
 
             System.out.print("Enter name: ");
             String name = scanner.nextLine();
