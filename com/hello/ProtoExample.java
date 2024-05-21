@@ -9,12 +9,12 @@ import java.util.Scanner;
 public class ProtoExample {
     private static final String account_file_name="/home/hpr/Protoexample/com/hello/accountdetails.text";
     public static void main(String[] args) {
-        Map<Integer, hellorequest> accountDetails = new HashMap<>();
+        Map<Integer, hellorequest> accountDetails = load();
         Scanner scanner = new Scanner(System.in);
         boolean exit=false;
         while(!exit){
             System.out.println("****Bank Application Menu****");
-            System.out.println("1. Create new Account\n2. Exit");
+            System.out.println("1. Create new Account\n2. View Account\n3. Exit");
             System.out.print("Enter your choice: ");
             int choice=scanner.nextInt();
 
@@ -23,6 +23,9 @@ public class ProtoExample {
                     createAccount(scanner, accountDetails);
                     break;
                 case 2:
+                    viewAccountDetails(scanner, accountDetails);
+                    break;
+                case 3:
                     exit=true;
                     save(accountDetails);
                     break;
@@ -31,7 +34,6 @@ public class ProtoExample {
                     break;
             }
         }
-
         System.out.println("Bank Account Details loaded from file:\n");
         Map<Integer,hellorequest> loadedAccountDetails= load();
         for (Map.Entry<Integer, hellorequest> entry : loadedAccountDetails.entrySet()) {
@@ -42,10 +44,10 @@ public class ProtoExample {
             System.out.println("Balance: "+account.getBalance());
             System.out.println();
         }
-
         scanner.close();
     }
 
+    //CREATE ACCOUNT
     private static void createAccount(Scanner scanner,Map<Integer,hellorequest>accountDetails){
         System.out.println("Enter account number: ");
         int accountnumber=scanner.nextInt();
@@ -59,26 +61,59 @@ public class ProtoExample {
                                              .setBalance(0)
                                              .build();
         accountDetails.put(accountnumber,account);
-        System.out.println("Account created successfully.");
+        System.out.println("Account created successfully.\n");
 
     }
 
+    //VIEW ACCOUNT DETAILS
+    private static void viewAccountDetails(Scanner scanner, Map<Integer, hellorequest> accountDetails) {
+        System.out.print("Enter account number: ");
+        int accountNumber = scanner.nextInt();
+        scanner.nextLine();
+
+        hellorequest account = accountDetails.get(accountNumber);
+        if (account != null) {
+            System.out.println("Account Number: " + accountNumber);
+            System.out.println("Name: " + account.getName());
+            System.out.println("Balance: " + account.getBalance());
+        } else {
+            System.out.println("Account not found.");
+        }
+    }
+
+    //SAVE ACCOUNT DETAILS TO THE FILE
     private static void save(Map<Integer,hellorequest> accountDetails){
-        try(ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream(account_file_name))){
-            oos.writeObject(accountDetails);
-            System.out.println("Account details saved");
+        try(DataOutputStream dos=new DataOutputStream(new FileOutputStream(account_file_name))){
+            dos.writeInt(accountDetails.size());
+            for(Map.Entry<Integer,hellorequest> entry: accountDetails.entrySet()){
+                dos.writeInt(entry.getKey());
+                byte[] accountBytes=entry.getValue().toByteArray();
+                dos.writeInt(accountBytes.length);
+                dos.write(accountBytes);
+            }
         } catch(IOException e){
             e.printStackTrace();
         }
     }
-    @SuppressWarnings("unchecked")
+
+    //LOAD ACCOUNT DETAILS FROM THE FILE TO THE HASHMAP
     private static Map<Integer,hellorequest> load(){
-        Map<Integer,hellorequest> Details=new HashMap<>();
-        try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(account_file_name))){
-            Details=(Map<Integer,hellorequest>)ois.readObject();
-        } catch(IOException| ClassNotFoundException e){
+        Map<Integer,hellorequest> accountDetails=new HashMap<>();
+        try(DataInputStream dis=new DataInputStream(new FileInputStream(account_file_name))){
+            int size=dis.readInt();
+            for(int i=0;i<size;i++){
+                int accountnum=dis.readInt();
+                int length=dis.readInt();
+                byte[] accountBytes=new byte[length];
+                dis.readFully(accountBytes);
+                hellorequest account=hellorequest.parseFrom(accountBytes);
+                accountDetails.put(accountnum,account);
+            }
+        }catch(FileNotFoundException e){
+            System.out.println("No existing data file found");
+        } catch(IOException e){
             e.printStackTrace();
         }
-        return Details;
+        return accountDetails;
     }
 }
