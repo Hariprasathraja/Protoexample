@@ -29,6 +29,12 @@ public final class Hello {
      */
     com.google.protobuf.ByteString
         getNameBytes();
+
+    /**
+     * <code>float balance = 2;</code>
+     * @return The balance.
+     */
+    float getBalance();
   }
   /**
    * Protobuf type {@code com.hello.hellorequest}
@@ -110,6 +116,17 @@ public final class Hello {
       }
     }
 
+    public static final int BALANCE_FIELD_NUMBER = 2;
+    private float balance_ = 0F;
+    /**
+     * <code>float balance = 2;</code>
+     * @return The balance.
+     */
+    @java.lang.Override
+    public float getBalance() {
+      return balance_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -127,6 +144,9 @@ public final class Hello {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
+      if (java.lang.Float.floatToRawIntBits(balance_) != 0) {
+        output.writeFloat(2, balance_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -138,6 +158,10 @@ public final class Hello {
       size = 0;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (java.lang.Float.floatToRawIntBits(balance_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(2, balance_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -156,6 +180,9 @@ public final class Hello {
 
       if (!getName()
           .equals(other.getName())) return false;
+      if (java.lang.Float.floatToIntBits(getBalance())
+          != java.lang.Float.floatToIntBits(
+              other.getBalance())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -169,6 +196,9 @@ public final class Hello {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + BALANCE_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getBalance());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -299,6 +329,7 @@ public final class Hello {
         super.clear();
         bitField0_ = 0;
         name_ = "";
+        balance_ = 0F;
         return this;
       }
 
@@ -334,6 +365,9 @@ public final class Hello {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.name_ = name_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.balance_ = balance_;
         }
       }
 
@@ -386,6 +420,9 @@ public final class Hello {
           bitField0_ |= 0x00000001;
           onChanged();
         }
+        if (other.getBalance() != 0F) {
+          setBalance(other.getBalance());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -417,6 +454,11 @@ public final class Hello {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
+              case 21: {
+                balance_ = input.readFloat();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 21
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -505,6 +547,38 @@ public final class Hello {
         onChanged();
         return this;
       }
+
+      private float balance_ ;
+      /**
+       * <code>float balance = 2;</code>
+       * @return The balance.
+       */
+      @java.lang.Override
+      public float getBalance() {
+        return balance_;
+      }
+      /**
+       * <code>float balance = 2;</code>
+       * @param value The balance to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBalance(float value) {
+        
+        balance_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float balance = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBalance() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        balance_ = 0F;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -583,8 +657,9 @@ public final class Hello {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013hello.proto\022\tcom.hello\"\034\n\014hellorequest" +
-      "\022\014\n\004name\030\001 \001(\tB\013\n\tcom.hellob\006proto3"
+      "\n\013hello.proto\022\tcom.hello\"-\n\014hellorequest" +
+      "\022\014\n\004name\030\001 \001(\t\022\017\n\007balance\030\002 \001(\002B\013\n\tcom.h" +
+      "ellob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -595,7 +670,7 @@ public final class Hello {
     internal_static_com_hello_hellorequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_hello_hellorequest_descriptor,
-        new java.lang.String[] { "Name", });
+        new java.lang.String[] { "Name", "Balance", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
