@@ -14,7 +14,7 @@ public class ProtoExample {
         boolean exit=false;
         while(!exit){
             System.out.println("****Bank Application Menu****\n");
-            System.out.println("1. Create new Account\n2. View Account\n3. Deposit Amount\n4. Exit");
+            System.out.println("1. Create new Account\n2. View Account\n3. Deposit Amount\n4. Withdraw Amount\n5. Exit");
             System.out.print("\nEnter your choice: ");
             int choice=scanner.nextInt();
 
@@ -29,6 +29,9 @@ public class ProtoExample {
                     depostitAmount(scanner, accountDetails);
                     break;
                 case 4:
+                    withdrawAmount(scanner, accountDetails);
+                    break;
+                case 5:
                     exit=true;
                     save(accountDetails);
                     break;
@@ -99,6 +102,26 @@ public class ProtoExample {
                 account=hellorequest.newBuilder(account).setBalance(account.getBalance()+amount).build();
                 accountDetails.put(accountnum,account);
                 System.out.println("\n**Amount Deposited**\n");
+            }else{
+                System.out.println("Invalid amount");
+            }
+        }else{
+            System.out.println("Account not found.");
+        }
+    }
+
+    private static void withdrawAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
+        System.out.println("Enter your account number: ");
+        int accountnum=scanner.nextInt();
+        scanner.nextLine();
+        hellorequest account=accountDetails.get(accountnum);
+        if(account!=null){
+            System.out.println("Enter amount to be withdrawn: ");
+            float amount=scanner.nextFloat();
+            scanner.nextLine();
+            if(amount>0 && amount<=account.getBalance()){
+                account=hellorequest.newBuilder(account).setBalance(account.getBalance()-amount).build();
+                accountDetails.put(accountnum,account);
             }else{
                 System.out.println("Invalid amount");
             }
