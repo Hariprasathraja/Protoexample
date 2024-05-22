@@ -14,7 +14,7 @@ public class ProtoExample {
         boolean exit=false;
         while(!exit){
             System.out.println("****Bank Application Menu****\n");
-            System.out.println("1. Create new Account\n2. View Account\n3. Deposit Amount\n4. Withdraw Amount\n5. Exit");
+            System.out.println("1. Create new Account\n2. View Account\n3. Update Account\n4. Delete Account\n5. Deposit Amount\n6. Withdraw Amount\n7. Exit");
             System.out.print("\nEnter your choice: ");
             int choice=scanner.nextInt();
 
@@ -26,12 +26,18 @@ public class ProtoExample {
                     viewAccountDetails(scanner, accountDetails);
                     break;
                 case 3:
-                    depostitAmount(scanner, accountDetails);
+                    updateAccount(scanner, accountDetails);
                     break;
                 case 4:
-                    withdrawAmount(scanner, accountDetails);
+                    deleteAccount(scanner, accountDetails);
                     break;
                 case 5:
+                    depostitAmount(scanner, accountDetails);
+                    break;
+                case 6:
+                    withdrawAmount(scanner, accountDetails);
+                    break;
+                case 7:
                     exit=true;
                     save(accountDetails);
                     break;
@@ -87,6 +93,36 @@ public class ProtoExample {
         }
     }
 
+    //UPDATE ACCOUNT
+    private static void updateAccount(Scanner scanner,Map<Integer,hellorequest>accountDetails){
+        System.out.println("Enter your account number: ");
+        int accountnum=scanner.nextInt();
+        scanner.nextLine();
+        hellorequest account=accountDetails.get(accountnum);
+        if(account!=null){
+            System.out.println("Enter your new name: ");
+            String newname=scanner.nextLine();
+            account=hellorequest.newBuilder(account).setName(newname).build();
+            accountDetails.put(accountnum,account);
+            System.out.println("Account name updated successfully.");
+        }else{
+            System.out.println("Account not found.");
+        }
+    }
+
+    //DELETE ACCOUNT
+    private static void deleteAccount(Scanner scanner,Map<Integer,hellorequest>accountDetails){
+        System.out.println("Enter your account number: ");
+        int accountnum=scanner.nextInt();
+        scanner.nextLine();
+
+        if(accountDetails.remove(accountnum)!=null){
+            System.out.println("Account deleted successfully.");
+        }else{
+            System.out.println("Account not found.");
+        }
+    }
+
     //DEPOSIT AMOUNT
     private static void depostitAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
         System.out.println("Enter your account number: ");
@@ -101,7 +137,7 @@ public class ProtoExample {
             if(amount>0){
                 account=hellorequest.newBuilder(account).setBalance(account.getBalance()+amount).build();
                 accountDetails.put(accountnum,account);
-                System.out.println("\n**Amount Deposited**\n");
+                System.out.println("\n**Amount Deposited Successfully**\n");
             }else{
                 System.out.println("Invalid amount");
             }
