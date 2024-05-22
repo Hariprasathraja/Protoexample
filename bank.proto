@@ -4,6 +4,7 @@ package com.app;
 option java_package="com.app";
 
 message AccountDetails{
-    string name=1;
-    float balance=2;
+    int32 accountnumber=1;
+    string name=2;
+    float balance=3;
 }
