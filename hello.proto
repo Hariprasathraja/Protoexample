@@ -1,9 +1,0 @@
-syntax="proto3";
-
-package com.hello;
-option java_package="com.hello";
-
-message hellorequest{
-    string name=1;
-    float balance=2;
-}

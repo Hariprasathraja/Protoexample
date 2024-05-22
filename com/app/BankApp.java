@@ -1,15 +1,17 @@
-package com.hello;
+package com.app;
 
 import java.io.*;
-import com.hello.Hello.hellorequest;
+
+import com.app.Bank;
+import com.app.Bank.AccountDetails;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class BankApp {
-    private static final String account_file_name="/home/hpr/Protoexample/com/hello/accountdetails.text";
+    private static final String account_file_name="/home/hpr/Protoexample/com/accountdetails.bin";
     public static void main(String[] args) {
-        Map<Integer, hellorequest> accountDetails = loadAccountDetails();
+        Map<Integer, AccountDetails> accountDetails = loadAccountDetails();
         Scanner scanner = new Scanner(System.in);
         boolean exit=false;
         while(!exit){
@@ -47,10 +49,10 @@ public class BankApp {
             }
         }
         System.out.println("Bank Account Details loaded from file:\n");
-        Map<Integer,hellorequest> loadedAccountDetails= loadAccountDetails();
-        for (Map.Entry<Integer, hellorequest> entry : loadedAccountDetails.entrySet()) {
+        Map<Integer,AccountDetails> loadedAccountDetails= loadAccountDetails();
+        for (Map.Entry<Integer, AccountDetails> entry : loadedAccountDetails.entrySet()) {
             int accountNumber = entry.getKey();
-            hellorequest account = entry.getValue();
+            AccountDetails account = entry.getValue();
             System.out.println("Account Number: " + accountNumber);
             System.out.println("Name: " + account.getName());
             System.out.println("Balance: "+account.getBalance());
@@ -60,7 +62,7 @@ public class BankApp {
     }
 
     //CREATE ACCOUNT
-    private static void createAccount(Scanner scanner,Map<Integer,hellorequest>accountDetails){
+    private static void createAccount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
         System.out.println("Enter account number: ");
         int accountnumber=scanner.nextInt();
         scanner.nextLine();
@@ -68,7 +70,7 @@ public class BankApp {
         System.out.println("Enter name:" );
         String name=scanner.nextLine();
 
-        hellorequest account=hellorequest.newBuilder()
+        AccountDetails account=AccountDetails.newBuilder()
                                              .setName(name)
                                              .setBalance(0)
                                              .build();
@@ -78,12 +80,12 @@ public class BankApp {
     }
 
     //VIEW ACCOUNT DETAILS
-    private static void viewAccountDetails(Scanner scanner, Map<Integer, hellorequest> accountDetails) {
+    private static void viewAccountDetails(Scanner scanner, Map<Integer, AccountDetails> accountDetails) {
         System.out.print("Enter account number: ");
         int accountNumber = scanner.nextInt();
         scanner.nextLine();
 
-        hellorequest account = accountDetails.get(accountNumber);
+        AccountDetails account = accountDetails.get(accountNumber);
         if (account != null) {
             System.out.println("Account Number: " + accountNumber);
             System.out.println("Name: " + account.getName());
@@ -94,15 +96,15 @@ public class BankApp {
     }
 
     //UPDATE ACCOUNT
-    private static void updateAccount(Scanner scanner,Map<Integer,hellorequest>accountDetails){
+    private static void updateAccount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
-        hellorequest account=accountDetails.get(accountnum);
+        AccountDetails account=accountDetails.get(accountnum);
         if(account!=null){
             System.out.println("Enter your new name: ");
             String newname=scanner.nextLine();
-            account=hellorequest.newBuilder(account).setName(newname).build();
+            account=AccountDetails.newBuilder(account).setName(newname).build();
             accountDetails.put(accountnum,account);
             System.out.println("Account name updated successfully.");
         }else{
@@ -111,7 +113,7 @@ public class BankApp {
     }
 
     //DELETE ACCOUNT
-    private static void deleteAccount(Scanner scanner,Map<Integer,hellorequest>accountDetails){
+    private static void deleteAccount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
@@ -124,18 +126,18 @@ public class BankApp {
     }
 
     //DEPOSIT AMOUNT
-    private static void depositAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
+    private static void depositAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
-        hellorequest account=accountDetails.get(accountnum);
+        AccountDetails account=accountDetails.get(accountnum);
         if(account!=null){
             System.out.println("Enter amount to be deposited: ");
             float amount=scanner.nextFloat();
             scanner.nextLine();
 
             if(amount>0){
-                account=hellorequest.newBuilder(account).setBalance(account.getBalance()+amount).build();
+                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()+amount).build();
                 accountDetails.put(accountnum,account);
                 System.out.println("\n**Amount Deposited Successfully**\n");
             }else{
@@ -147,17 +149,17 @@ public class BankApp {
     }
 
     //WITHDRAW AMOUNT
-    private static void withdrawAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
+    private static void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
-        hellorequest account=accountDetails.get(accountnum);
+        AccountDetails account=accountDetails.get(accountnum);
         if(account!=null){
             System.out.println("Enter amount to be withdrawn: ");
             float amount=scanner.nextFloat();
             scanner.nextLine();
             if(amount>0 && amount<=account.getBalance()){
-                account=hellorequest.newBuilder(account).setBalance(account.getBalance()-amount).build();
+                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()-amount).build();
                 accountDetails.put(accountnum,account);
             }else{
                 System.out.println("Invalid amount");
@@ -168,10 +170,10 @@ public class BankApp {
     }
 
     //SAVE ACCOUNT DETAILS TO THE FILE
-    private static void saveAccountDetails(Map<Integer,hellorequest> accountDetails){
+    private static void saveAccountDetails(Map<Integer,AccountDetails> accountDetails){
         try(DataOutputStream dos=new DataOutputStream(new FileOutputStream(account_file_name))){
             dos.writeInt(accountDetails.size());
-            for(Map.Entry<Integer,hellorequest> entry: accountDetails.entrySet()){
+            for(Map.Entry<Integer,AccountDetails> entry: accountDetails.entrySet()){
                 dos.writeInt(entry.getKey());
                 byte[] accountBytes=entry.getValue().toByteArray();
                 dos.writeInt(accountBytes.length);
@@ -183,8 +185,8 @@ public class BankApp {
     }
 
     //LOAD ACCOUNT DETAILS FROM THE FILE TO THE HASHMAP
-    private static Map<Integer,hellorequest> loadAccountDetails(){
-        Map<Integer,hellorequest> accountDetails=new HashMap<>();
+    private static Map<Integer,AccountDetails> loadAccountDetails(){
+        Map<Integer,AccountDetails> accountDetails=new HashMap<>();
         try(DataInputStream dis=new DataInputStream(new FileInputStream(account_file_name))){
             int size=dis.readInt();
             for(int i=0;i<size;i++){
@@ -192,7 +194,7 @@ public class BankApp {
                 int length=dis.readInt();
                 byte[] accountBytes=new byte[length];
                 dis.readFully(accountBytes);
-                hellorequest account=hellorequest.parseFrom(accountBytes);
+                AccountDetails account=AccountDetails.parseFrom(accountBytes);
                 accountDetails.put(accountnum,account);
             }
         }catch(FileNotFoundException e){
