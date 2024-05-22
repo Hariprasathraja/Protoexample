@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ProtoExample {
+public class BankApp {
     private static final String account_file_name="/home/hpr/Protoexample/com/hello/accountdetails.text";
     public static void main(String[] args) {
-        Map<Integer, hellorequest> accountDetails = load();
+        Map<Integer, hellorequest> accountDetails = loadAccountDetails();
         Scanner scanner = new Scanner(System.in);
         boolean exit=false;
         while(!exit){
@@ -32,14 +32,14 @@ public class ProtoExample {
                     deleteAccount(scanner, accountDetails);
                     break;
                 case 5:
-                    depostitAmount(scanner, accountDetails);
+                    depositAmount(scanner, accountDetails);
                     break;
                 case 6:
                     withdrawAmount(scanner, accountDetails);
                     break;
                 case 7:
                     exit=true;
-                    save(accountDetails);
+                    saveAccountDetails(accountDetails);
                     break;
                 default:
                     System.out.println("Invalid choice");
@@ -47,7 +47,7 @@ public class ProtoExample {
             }
         }
         System.out.println("Bank Account Details loaded from file:\n");
-        Map<Integer,hellorequest> loadedAccountDetails= load();
+        Map<Integer,hellorequest> loadedAccountDetails= loadAccountDetails();
         for (Map.Entry<Integer, hellorequest> entry : loadedAccountDetails.entrySet()) {
             int accountNumber = entry.getKey();
             hellorequest account = entry.getValue();
@@ -124,7 +124,7 @@ public class ProtoExample {
     }
 
     //DEPOSIT AMOUNT
-    private static void depostitAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
+    private static void depositAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
@@ -168,7 +168,7 @@ public class ProtoExample {
     }
 
     //SAVE ACCOUNT DETAILS TO THE FILE
-    private static void save(Map<Integer,hellorequest> accountDetails){
+    private static void saveAccountDetails(Map<Integer,hellorequest> accountDetails){
         try(DataOutputStream dos=new DataOutputStream(new FileOutputStream(account_file_name))){
             dos.writeInt(accountDetails.size());
             for(Map.Entry<Integer,hellorequest> entry: accountDetails.entrySet()){
@@ -183,7 +183,7 @@ public class ProtoExample {
     }
 
     //LOAD ACCOUNT DETAILS FROM THE FILE TO THE HASHMAP
-    private static Map<Integer,hellorequest> load(){
+    private static Map<Integer,hellorequest> loadAccountDetails(){
         Map<Integer,hellorequest> accountDetails=new HashMap<>();
         try(DataInputStream dis=new DataInputStream(new FileInputStream(account_file_name))){
             int size=dis.readInt();
