@@ -13,9 +13,9 @@ public class ProtoExample {
         Scanner scanner = new Scanner(System.in);
         boolean exit=false;
         while(!exit){
-            System.out.println("****Bank Application Menu****");
-            System.out.println("1. Create new Account\n2. View Account\n3. Exit");
-            System.out.print("Enter your choice: ");
+            System.out.println("****Bank Application Menu****\n");
+            System.out.println("1. Create new Account\n2. View Account\n3. Deposit Amount\n4. Exit");
+            System.out.print("\nEnter your choice: ");
             int choice=scanner.nextInt();
 
             switch (choice) {
@@ -26,6 +26,9 @@ public class ProtoExample {
                     viewAccountDetails(scanner, accountDetails);
                     break;
                 case 3:
+                    depostitAmount(scanner, accountDetails);
+                    break;
+                case 4:
                     exit=true;
                     save(accountDetails);
                     break;
@@ -75,8 +78,31 @@ public class ProtoExample {
         if (account != null) {
             System.out.println("Account Number: " + accountNumber);
             System.out.println("Name: " + account.getName());
-            System.out.println("Balance: " + account.getBalance());
+            System.out.println("Balance: " + account.getBalance()+"\n");
         } else {
+            System.out.println("Account not found.\n");
+        }
+    }
+
+    //DEPOSIT AMOUNT
+    private static void depostitAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
+        System.out.println("Enter your account number: ");
+        int accountnum=scanner.nextInt();
+        scanner.nextLine();
+        hellorequest account=accountDetails.get(accountnum);
+        if(account!=null){
+            System.out.println("Enter amount to be deposited: ");
+            float amount=scanner.nextFloat();
+            scanner.nextLine();
+
+            if(amount>0){
+                account=hellorequest.newBuilder(account).setBalance(account.getBalance()+amount).build();
+                accountDetails.put(accountnum,account);
+                System.out.println("\n**Amount Deposited**\n");
+            }else{
+                System.out.println("Invalid amount");
+            }
+        }else{
             System.out.println("Account not found.");
         }
     }
