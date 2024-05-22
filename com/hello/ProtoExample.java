@@ -146,6 +146,7 @@ public class ProtoExample {
         }
     }
 
+    //WITHDRAW AMOUNT
     private static void withdrawAmount(Scanner scanner,Map<Integer,hellorequest> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
