@@ -19,19 +19,25 @@ public final class Bank {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string name = 1;</code>
+     * <code>int32 accountnumber = 1;</code>
+     * @return The accountnumber.
+     */
+    int getAccountnumber();
+
+    /**
+     * <code>string name = 2;</code>
      * @return The name.
      */
     java.lang.String getName();
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>float balance = 2;</code>
+     * <code>float balance = 3;</code>
      * @return The balance.
      */
     float getBalance();
@@ -77,11 +83,22 @@ public final class Bank {
               com.app.Bank.AccountDetails.class, com.app.Bank.AccountDetails.Builder.class);
     }
 
-    public static final int NAME_FIELD_NUMBER = 1;
+    public static final int ACCOUNTNUMBER_FIELD_NUMBER = 1;
+    private int accountnumber_ = 0;
+    /**
+     * <code>int32 accountnumber = 1;</code>
+     * @return The accountnumber.
+     */
+    @java.lang.Override
+    public int getAccountnumber() {
+      return accountnumber_;
+    }
+
+    public static final int NAME_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private volatile java.lang.Object name_ = "";
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @return The name.
      */
     @java.lang.Override
@@ -98,7 +115,7 @@ public final class Bank {
       }
     }
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -116,10 +133,10 @@ public final class Bank {
       }
     }
 
-    public static final int BALANCE_FIELD_NUMBER = 2;
+    public static final int BALANCE_FIELD_NUMBER = 3;
     private float balance_ = 0F;
     /**
-     * <code>float balance = 2;</code>
+     * <code>float balance = 3;</code>
      * @return The balance.
      */
     @java.lang.Override
@@ -141,11 +158,14 @@ public final class Bank {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (accountnumber_ != 0) {
+        output.writeInt32(1, accountnumber_);
+      }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
       if (java.lang.Float.floatToRawIntBits(balance_) != 0) {
-        output.writeFloat(2, balance_);
+        output.writeFloat(3, balance_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -156,12 +176,16 @@ public final class Bank {
       if (size != -1) return size;
 
       size = 0;
+      if (accountnumber_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, accountnumber_);
+      }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
       if (java.lang.Float.floatToRawIntBits(balance_) != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(2, balance_);
+          .computeFloatSize(3, balance_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -178,6 +202,8 @@ public final class Bank {
       }
       com.app.Bank.AccountDetails other = (com.app.Bank.AccountDetails) obj;
 
+      if (getAccountnumber()
+          != other.getAccountnumber()) return false;
       if (!getName()
           .equals(other.getName())) return false;
       if (java.lang.Float.floatToIntBits(getBalance())
@@ -194,6 +220,8 @@ public final class Bank {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ACCOUNTNUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getAccountnumber();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + BALANCE_FIELD_NUMBER;
@@ -328,6 +356,7 @@ public final class Bank {
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
+        accountnumber_ = 0;
         name_ = "";
         balance_ = 0F;
         return this;
@@ -364,9 +393,12 @@ public final class Bank {
       private void buildPartial0(com.app.Bank.AccountDetails result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.name_ = name_;
+          result.accountnumber_ = accountnumber_;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.name_ = name_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
           result.balance_ = balance_;
         }
       }
@@ -415,9 +447,12 @@ public final class Bank {
 
       public Builder mergeFrom(com.app.Bank.AccountDetails other) {
         if (other == com.app.Bank.AccountDetails.getDefaultInstance()) return this;
+        if (other.getAccountnumber() != 0) {
+          setAccountnumber(other.getAccountnumber());
+        }
         if (!other.getName().isEmpty()) {
           name_ = other.name_;
-          bitField0_ |= 0x00000001;
+          bitField0_ |= 0x00000002;
           onChanged();
         }
         if (other.getBalance() != 0F) {
@@ -449,16 +484,21 @@ public final class Bank {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                name_ = input.readStringRequireUtf8();
+              case 8: {
+                accountnumber_ = input.readInt32();
                 bitField0_ |= 0x00000001;
                 break;
-              } // case 10
-              case 21: {
-                balance_ = input.readFloat();
+              } // case 8
+              case 18: {
+                name_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000002;
                 break;
-              } // case 21
+              } // case 18
+              case 29: {
+                balance_ = input.readFloat();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 29
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -476,9 +516,41 @@ public final class Bank {
       }
       private int bitField0_;
 
+      private int accountnumber_ ;
+      /**
+       * <code>int32 accountnumber = 1;</code>
+       * @return The accountnumber.
+       */
+      @java.lang.Override
+      public int getAccountnumber() {
+        return accountnumber_;
+      }
+      /**
+       * <code>int32 accountnumber = 1;</code>
+       * @param value The accountnumber to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountnumber(int value) {
+        
+        accountnumber_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 accountnumber = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccountnumber() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        accountnumber_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object name_ = "";
       /**
-       * <code>string name = 1;</code>
+       * <code>string name = 2;</code>
        * @return The name.
        */
       public java.lang.String getName() {
@@ -494,7 +566,7 @@ public final class Bank {
         }
       }
       /**
-       * <code>string name = 1;</code>
+       * <code>string name = 2;</code>
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString
@@ -511,7 +583,7 @@ public final class Bank {
         }
       }
       /**
-       * <code>string name = 1;</code>
+       * <code>string name = 2;</code>
        * @param value The name to set.
        * @return This builder for chaining.
        */
@@ -519,22 +591,22 @@ public final class Bank {
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         name_ = value;
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
       /**
-       * <code>string name = 1;</code>
+       * <code>string name = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearName() {
         name_ = getDefaultInstance().getName();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
       /**
-       * <code>string name = 1;</code>
+       * <code>string name = 2;</code>
        * @param value The bytes for name to set.
        * @return This builder for chaining.
        */
@@ -543,14 +615,14 @@ public final class Bank {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         name_ = value;
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
 
       private float balance_ ;
       /**
-       * <code>float balance = 2;</code>
+       * <code>float balance = 3;</code>
        * @return The balance.
        */
       @java.lang.Override
@@ -558,23 +630,23 @@ public final class Bank {
         return balance_;
       }
       /**
-       * <code>float balance = 2;</code>
+       * <code>float balance = 3;</code>
        * @param value The balance to set.
        * @return This builder for chaining.
        */
       public Builder setBalance(float value) {
         
         balance_ = value;
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
       /**
-       * <code>float balance = 2;</code>
+       * <code>float balance = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearBalance() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         balance_ = 0F;
         onChanged();
         return this;
@@ -657,9 +729,9 @@ public final class Bank {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nbank.proto\022\007com.app\"/\n\016AccountDetails\022" +
-      "\014\n\004name\030\001 \001(\t\022\017\n\007balance\030\002 \001(\002B\t\n\007com.ap" +
-      "pb\006proto3"
+      "\n\nbank.proto\022\007com.app\"F\n\016AccountDetails\022" +
+      "\025\n\raccountnumber\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\017\n\007" +
+      "balance\030\003 \001(\002B\t\n\007com.appb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -670,7 +742,7 @@ public final class Bank {
     internal_static_com_app_AccountDetails_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_app_AccountDetails_descriptor,
-        new java.lang.String[] { "Name", "Balance", });
+        new java.lang.String[] { "Accountnumber", "Name", "Balance", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
