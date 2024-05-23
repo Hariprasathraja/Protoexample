@@ -71,6 +71,7 @@ public class BankApp {
         String name=scanner.nextLine();
 
         AccountDetails account=AccountDetails.newBuilder()
+                                             .setAccountnumber(accountnumber)
                                              .setName(name)
                                              .setBalance(0)
                                              .build();
