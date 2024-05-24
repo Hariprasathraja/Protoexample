@@ -8,3 +8,7 @@ message AccountDetails{
     string name=2;
     float balance=3;
 }
+
+message AccountMap {
+    map<int32, AccountDetails> accounts = 1;
+}
