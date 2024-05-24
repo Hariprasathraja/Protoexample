@@ -4,6 +4,7 @@ import java.io.*;
 
 import com.app.Bank;
 import com.app.Bank.AccountDetails;
+import com.app.Bank.AccountMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -172,37 +173,30 @@ public class BankApp {
 
     //SAVE ACCOUNT DETAILS TO THE FILE
     private static void saveAccountDetails(Map<Integer,AccountDetails> accountDetails){
-        try(DataOutputStream dos=new DataOutputStream(new FileOutputStream(account_file_name))){
-            dos.writeInt(accountDetails.size());
-            for(Map.Entry<Integer,AccountDetails> entry: accountDetails.entrySet()){
-                dos.writeInt(entry.getKey());
-                byte[] accountBytes=entry.getValue().toByteArray();
-                dos.writeInt(accountBytes.length);
-                dos.write(accountBytes);
-            }
-        } catch(IOException e){
+        AccountMap.Builder accountMapBuilder = AccountMap.newBuilder();
+        accountDetails.forEach(accountMapBuilder::putAccounts);
+        AccountMap accountMap = accountMapBuilder.build();
+
+        try (FileOutputStream fos = new FileOutputStream(account_file_name)) {
+            accountMap.writeTo(fos);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     //LOAD ACCOUNT DETAILS FROM THE FILE TO THE HASHMAP
     private static Map<Integer,AccountDetails> loadAccountDetails(){
-        Map<Integer,AccountDetails> accountDetails=new HashMap<>();
-        try(DataInputStream dis=new DataInputStream(new FileInputStream(account_file_name))){
-            int size=dis.readInt();
-            for(int i=0;i<size;i++){
-                int accountnum=dis.readInt();
-                int length=dis.readInt();
-                byte[] accountBytes=new byte[length];
-                dis.readFully(accountBytes);
-                AccountDetails account=AccountDetails.parseFrom(accountBytes);
-                accountDetails.put(accountnum,account);
-            }
-        }catch(FileNotFoundException e){
+        Map<Integer, AccountDetails> accountDetails = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(account_file_name)) {
+            AccountMap accountMap = AccountMap.parseFrom(fis);
+            accountDetails.putAll(accountMap.getAccountsMap());
+        } catch (FileNotFoundException e) {
             System.out.println("No existing data file found");
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
         return accountDetails;
     }
 }
