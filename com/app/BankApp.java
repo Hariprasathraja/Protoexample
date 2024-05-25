@@ -1,10 +1,9 @@
 package com.app;
 
-import java.io.*;
 
-import com.app.Bank;
+import java.io.*;
 import com.app.Bank.AccountDetails;
-import com.app.Bank.AccountMap;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -172,31 +171,32 @@ public class BankApp {
     }
 
     //SAVE ACCOUNT DETAILS TO THE FILE
-    private static void saveAccountDetails(Map<Integer,AccountDetails> accountDetails){
-        AccountMap.Builder accountMapBuilder = AccountMap.newBuilder();
-        accountDetails.forEach(accountMapBuilder::putAccounts);
-        AccountMap accountMap = accountMapBuilder.build();
-
+    private static void saveAccountDetails(Map<Integer, AccountDetails> accountDetails) {
         try (FileOutputStream fos = new FileOutputStream(account_file_name)) {
-            accountMap.writeTo(fos);
+            for (AccountDetails account : accountDetails.values()) {
+                account.writeDelimitedTo(fos);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    
+    
     //LOAD ACCOUNT DETAILS FROM THE FILE TO THE HASHMAP
-    private static Map<Integer,AccountDetails> loadAccountDetails(){
+    private static Map<Integer, AccountDetails> loadAccountDetails() {
         Map<Integer, AccountDetails> accountDetails = new HashMap<>();
-
         try (FileInputStream fis = new FileInputStream(account_file_name)) {
-            AccountMap accountMap = AccountMap.parseFrom(fis);
-            accountDetails.putAll(accountMap.getAccountsMap());
+            while (fis.available() > 0) {
+                AccountDetails account = AccountDetails.parseDelimitedFrom(fis);
+                accountDetails.put(account.getAccountnumber(), account);
+            }
         } catch (FileNotFoundException e) {
             System.out.println("No existing data file found");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return accountDetails;
     }
+    
+    
 }
