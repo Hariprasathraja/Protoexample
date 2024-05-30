@@ -146,6 +146,22 @@ public class BankApp {
         }
     }
 
+    //DEPOSIT AMOUNT TESTING
+    public static void depositAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+        AccountDetails account=accountDetails.get(accountnum);
+        if(account!=null){
+            if(amount>0){
+                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()+amount).build();
+                accountDetails.put(accountnum,account);
+                System.out.println("\n**Amount Deposited Successfully**\n");
+            }else{
+                System.out.println("Invalid amount");
+            }
+        }else{
+            System.out.println("Account not found.");
+        }
+    }
+
     //WITHDRAW AMOUNT
     private static void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
         System.out.println("Enter your account number: ");
@@ -167,8 +183,23 @@ public class BankApp {
         }
     }
 
+    //WITHDRAW AMOUNT TESTING
+    public static void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+        AccountDetails account=accountDetails.get(accountnum);
+        if(account!=null){
+            if(amount>0 && amount<=account.getBalance()){
+                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()-amount).build();
+                accountDetails.put(accountnum,account);
+            }else{
+                System.out.println("Invalid amount");
+            }
+        }else{
+            System.out.println("Account not found.");
+        }
+    }
+
     //TRANSFER AMOUNT FROM ONE ACCOUNT TO ANOTHER
-    private static void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
+    public static void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
         System.out.println("Enter your account no: ");
         int fromAccountNum=scanner.nextInt();
         scanner.nextLine();
@@ -202,6 +233,33 @@ public class BankApp {
         }
     }
 
+    //TRANSFER AMOUNT TESTING
+    public static void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails,int fromAccountNum,int toAccountNum,float amount){
+        AccountDetails fromAccount= accountDetails.get(fromAccountNum);
+
+        if(fromAccount!=null){
+            AccountDetails toAccount=accountDetails.get(toAccountNum);
+
+            if(toAccount!=null){
+                if(amount>0 && amount<=fromAccount.getBalance()){
+                    fromAccount=AccountDetails.newBuilder(fromAccount).setBalance(fromAccount.getBalance()-amount).build();
+                    toAccount=AccountDetails.newBuilder(toAccount).setBalance(toAccount.getBalance()+amount).build();
+                    accountDetails.put(fromAccountNum,fromAccount);
+                    accountDetails.put(toAccountNum, toAccount);
+                    saveAccountDetails(accountDetails);
+                    System.out.println("\n---Amount has been transferred successfully---");
+                }else{
+                    System.out.println("Insufficient funds or Invalid Amount");
+                }
+            }else{
+                System.out.println("Recipient account not found.");
+            }
+        }else{
+            System.out.println("Invalid account number.");
+        }
+    }
+
+
     //DISPLAY ACCOUNT DETAILS
     private static void displayAccountDetails(){
         System.out.println("Bank Account Details loaded from file:\n");
@@ -217,7 +275,7 @@ public class BankApp {
     }
 
     //SAVE ACCOUNT DETAILS TO THE FILE
-    private static void saveAccountDetails(Map<Integer, AccountDetails> accountDetails) {
+    public static void saveAccountDetails(Map<Integer, AccountDetails> accountDetails) {
         try (FileOutputStream fos = new FileOutputStream(account_file_name)) {
             for (AccountDetails account : accountDetails.values()) {
                 account.writeDelimitedTo(fos);
@@ -229,7 +287,7 @@ public class BankApp {
     
     
     //LOAD ACCOUNT DETAILS FROM THE FILE TO THE HASHMAP
-    private static Map<Integer, AccountDetails> loadAccountDetails() {
+    public static Map<Integer, AccountDetails> loadAccountDetails() {
         Map<Integer, AccountDetails> accountDetails = new HashMap<>();
         try (FileInputStream fis = new FileInputStream(account_file_name)) {
             while (fis.available() > 0) {
