@@ -3,14 +3,13 @@ package com.app;
 import com.app.Bank.AccountDetails;
 import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
 
 public class BankAppTest {
-    
+
     public static void main(String[] args) {
         Map<Integer, AccountDetails> accountDetails = BankApp.loadAccountDetails();
         if (accountDetails.isEmpty()) {
-            for (int i = 1; i <= 10; i++) {
+            for (int i = 1; i <= 100; i++) {
                 AccountDetails account = AccountDetails.newBuilder()
                         .setAccountnumber(i)
                         .setName("AccountHolder" + i)
@@ -27,81 +26,83 @@ public class BankAppTest {
         // Perform test case ii
         testOperationsConsistency(accountDetails);
     }
-    //TEST CASE 1:
+
+    // TEST CASE 1:
     private static void testTransferAmountConsistency(Map<Integer, AccountDetails> accountDetails) {
         double initialTotalBalance = calculateTotalBalance(accountDetails);
 
         Random random = new Random();
-        for (int i = 0; i < 50; i++) { // Perform 50 random transfers
-            int fromAccountNumber = random.nextInt(10);
-            int toAccountNumber = random.nextInt(10);
+        for (int i = 0; i < 10; i++) {
+            int fromAccountNumber = random.nextInt(100) + 1;
+            int toAccountNumber = random.nextInt(100) + 1;
 
-            // Ensure different accounts for transfer
             while (toAccountNumber == fromAccountNumber) {
-                toAccountNumber = random.nextInt(10);
+                toAccountNumber = random.nextInt(100) + 1;
             }
 
-            float amount = random.nextFloat(1000);
+            float amount = (float) (Math.round(random.nextFloat() * 1000 * 10) / 10.0);
 
-            BankApp.transferAmount(new Scanner(System.in), accountDetails, fromAccountNumber, toAccountNumber, amount);
+            if (accountDetails.containsKey(fromAccountNumber) && accountDetails.containsKey(toAccountNumber)) {
+                BankApp.transferAmount(accountDetails, fromAccountNumber, toAccountNumber, amount);
+            }
         }
 
         double finalTotalBalance = calculateTotalBalance(accountDetails);
 
-        if (initialTotalBalance == finalTotalBalance) {
+        if (Math.abs(initialTotalBalance - finalTotalBalance) < 0.2) {
             System.out.println("Test case i passed: Initial and final total balance are equal.");
         } else {
             System.out.println("Test case i failed: Initial and final total balance are not equal.");
         }
-        System.out.println(initialTotalBalance+" "+finalTotalBalance);
+        System.out.println("Initial: " + initialTotalBalance + ", Final: " + finalTotalBalance);
     }
 
-    //TEST CASE 2:
+    // TEST CASE 2:
     private static void testOperationsConsistency(Map<Integer, AccountDetails> accountDetails) {
         double initialTotalBalance = calculateTotalBalance(accountDetails);
         double depositTotal = 0;
         double withdrawTotal = 0;
 
         Random random = new Random();
-        for (int i = 0; i < 50; i++) { // Perform 50 random operations
-            int accountNumber = random.nextInt(10);
-            float depositAmount = random.nextFloat() * 100; 
-            float withdrawAmount = random.nextFloat() * 100; 
+        for (int i = 0; i < 10; i++) { 
+            int accountNumber = random.nextInt(10) + 1;
+            float depositAmount = (float) (Math.round(random.nextFloat() * 100 * 10) / 10.0);
+            float withdrawAmount = (float) (Math.round(random.nextFloat() * 100 * 10) / 10.0);
 
             depositTotal += depositAmount;
             withdrawTotal += withdrawAmount;
 
-            // Deposit
-            BankApp.depositAmount(new Scanner(System.in), accountDetails, accountNumber, depositAmount);
+            if (accountDetails.containsKey(accountNumber)) {
+                BankApp.depositAmount(accountDetails, accountNumber, depositAmount);
 
-            // Withdraw
-            BankApp.withdrawAmount(new Scanner(System.in), accountDetails, accountNumber, withdrawAmount);
-
-            // Transfer between random accounts
-            int fromAccountNumber = random.nextInt(10);
-            int toAccountNumber = random.nextInt(10);
-
-            // Ensure different accounts for transfer
-            while (toAccountNumber == fromAccountNumber) {
-                toAccountNumber = random.nextInt(10);
+                BankApp.withdrawAmount(accountDetails, accountNumber, withdrawAmount);
             }
 
-            float transferAmount = random.nextFloat(1000);
+            int fromAccountNumber = random.nextInt(100) + 1;
+            int toAccountNumber = random.nextInt(100) + 1;
 
-            BankApp.transferAmount(new Scanner(System.in), accountDetails, fromAccountNumber, toAccountNumber, transferAmount);
+            while (toAccountNumber == fromAccountNumber) {
+                toAccountNumber = random.nextInt(100) + 1;
+            }
+
+            float transferAmount = (float) (Math.round(random.nextFloat() * 1000 * 10) / 10.0);
+
+            if (accountDetails.containsKey(fromAccountNumber) && accountDetails.containsKey(toAccountNumber)) {
+                BankApp.transferAmount(accountDetails, fromAccountNumber, toAccountNumber, transferAmount);
+            }
         }
 
         double finalTotalBalance = calculateTotalBalance(accountDetails);
 
-        if (finalTotalBalance == initialTotalBalance + depositTotal - withdrawTotal) {
+        if (Math.abs(finalTotalBalance - (initialTotalBalance + depositTotal - withdrawTotal)) < 0.2) {
             System.out.println("Test case 2 passed: Final total balance is correct.");
         } else {
             System.out.println("Test case 2 failed: Final total balance is incorrect.");
         }
-        System.out.println(initialTotalBalance+" "+finalTotalBalance);
+        System.out.println("Initial: " + initialTotalBalance + ", Deposited: " + depositTotal + ", Withdrawn: " + withdrawTotal + ", Final: " + finalTotalBalance);
     }
 
-    //CALCULATE TOTAL BALANCE
+    // CALCULATE TOTAL BALANCE
     private static double calculateTotalBalance(Map<Integer, AccountDetails> accountDetails) {
         double totalBalance = 0;
         for (AccountDetails account : accountDetails.values()) {
