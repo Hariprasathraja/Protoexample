@@ -147,7 +147,7 @@ public class BankApp {
     }
 
     //DEPOSIT AMOUNT TESTING
-    public static void depositAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+    public static void depositAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
         AccountDetails account=accountDetails.get(accountnum);
         if(account!=null){
             if(amount>0){
@@ -184,7 +184,7 @@ public class BankApp {
     }
 
     //WITHDRAW AMOUNT TESTING
-    public static void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+    public static void withdrawAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
         AccountDetails account=accountDetails.get(accountnum);
         if(account!=null){
             if(amount>0 && amount<=account.getBalance()){
@@ -234,7 +234,7 @@ public class BankApp {
     }
 
     //TRANSFER AMOUNT TESTING
-    public static void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails,int fromAccountNum,int toAccountNum,float amount){
+    public static void transferAmount(Map<Integer,AccountDetails>accountDetails,int fromAccountNum,int toAccountNum,float amount){
         AccountDetails fromAccount= accountDetails.get(fromAccountNum);
 
         if(fromAccount!=null){
