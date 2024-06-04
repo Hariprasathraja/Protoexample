@@ -124,7 +124,7 @@ public class BankApp {
     }
 
     //DEPOSIT AMOUNT
-    private static void depositAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
+    private static synchronized void depositAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
@@ -147,7 +147,7 @@ public class BankApp {
     }
 
     //DEPOSIT AMOUNT TESTING
-    public static void depositAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+    public static synchronized void depositAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
         AccountDetails account=accountDetails.get(accountnum);
         if(account!=null){
             if(amount>0){
@@ -163,7 +163,7 @@ public class BankApp {
     }
 
     //WITHDRAW AMOUNT
-    private static void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
+    private static synchronized void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
@@ -184,7 +184,7 @@ public class BankApp {
     }
 
     //WITHDRAW AMOUNT TESTING
-    public static void withdrawAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+    public static synchronized void withdrawAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
         AccountDetails account=accountDetails.get(accountnum);
         if(account!=null){
             if(amount>0 && amount<=account.getBalance()){
@@ -199,7 +199,7 @@ public class BankApp {
     }
 
     //TRANSFER AMOUNT FROM ONE ACCOUNT TO ANOTHER
-    public static void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
+    public static synchronized void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
         System.out.println("Enter your account no: ");
         int fromAccountNum=scanner.nextInt();
         scanner.nextLine();
@@ -234,7 +234,7 @@ public class BankApp {
     }
 
     //TRANSFER AMOUNT TESTING
-    public static void transferAmount(Map<Integer,AccountDetails>accountDetails,int fromAccountNum,int toAccountNum,float amount){
+    public static synchronized void transferAmount(Map<Integer,AccountDetails>accountDetails,int fromAccountNum,int toAccountNum,float amount){
         AccountDetails fromAccount= accountDetails.get(fromAccountNum);
 
         if(fromAccount!=null){
