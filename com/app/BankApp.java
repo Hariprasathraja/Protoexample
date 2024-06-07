@@ -4,12 +4,11 @@ package com.app;
 import java.io.*;
 import com.app.Bank.AccountDetails;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
+import java.util.*;
+import java.util.concurrent.locks.*;
 public class BankApp {
     private static final String account_file_name="/home/hpr/Protoexample/com/accountdetails.bin";
+    private static final Lock lock = new ReentrantLock();
     public static void main(String[] args) {
         Map<Integer, AccountDetails> accountDetails = loadAccountDetails();
         Scanner scanner = new Scanner(System.in);
@@ -66,15 +65,18 @@ public class BankApp {
 
         System.out.println("Enter name:" );
         String name=scanner.nextLine();
-
-        AccountDetails account=AccountDetails.newBuilder()
-                                             .setAccountnumber(accountnumber)
-                                             .setName(name)
-                                             .setBalance(0)
-                                             .build();
-        accountDetails.put(accountnumber,account);
-        System.out.println("Account created successfully.\n");
-
+        lock.lock();
+        try{
+            AccountDetails account=AccountDetails.newBuilder()
+                                                 .setAccountnumber(accountnumber)
+                                                 .setName(name)
+                                                 .setBalance(0)
+                                                 .build();
+            accountDetails.put(accountnumber,account);
+            System.out.println("Account created successfully.\n");
+        }finally{
+            lock.unlock();
+        }
     }
 
     //VIEW ACCOUNT DETAILS
@@ -82,14 +84,18 @@ public class BankApp {
         System.out.print("Enter account number: ");
         int accountNumber = scanner.nextInt();
         scanner.nextLine();
-
-        AccountDetails account = accountDetails.get(accountNumber);
-        if (account != null) {
-            System.out.println("Account Number: " + accountNumber);
-            System.out.println("Name: " + account.getName());
-            System.out.println("Balance: " + account.getBalance()+"\n");
-        } else {
-            System.out.println("Account not found.\n");
+        lock.lock();
+        try{
+            AccountDetails account = accountDetails.get(accountNumber);
+            if (account != null) {
+                System.out.println("Account Number: " + accountNumber);
+                System.out.println("Name: " + account.getName());
+                System.out.println("Balance: " + account.getBalance()+"\n");
+            } else {
+                System.out.println("Account not found.\n");
+            }
+        }finally{
+            lock.unlock();
         }
     }
 
@@ -98,15 +104,20 @@ public class BankApp {
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
-        AccountDetails account=accountDetails.get(accountnum);
-        if(account!=null){
-            System.out.println("Enter your new name: ");
-            String newname=scanner.nextLine();
-            account=AccountDetails.newBuilder(account).setName(newname).build();
-            accountDetails.put(accountnum,account);
-            System.out.println("Account name updated successfully.");
-        }else{
-            System.out.println("Account not found.");
+        lock.lock();
+        try{
+            AccountDetails account=accountDetails.get(accountnum);
+            if(account!=null){
+                System.out.println("Enter your new name: ");
+                String newname=scanner.nextLine();
+                account=AccountDetails.newBuilder(account).setName(newname).build();
+                accountDetails.put(accountnum,account);
+                System.out.println("Account name updated successfully.");
+            }else{
+                System.out.println("Account not found.");
+            }
+        }finally{
+            lock.unlock();
         }
     }
 
@@ -115,147 +126,181 @@ public class BankApp {
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
-
-        if(accountDetails.remove(accountnum)!=null){
-            System.out.println("Account deleted successfully.");
-        }else{
-            System.out.println("Account not found.");
+        lock.lock();
+        try{
+            if(accountDetails.remove(accountnum)!=null){
+                System.out.println("Account deleted successfully.");
+            }else{
+                System.out.println("Account not found.");
+            }
+        }finally{
+            lock.unlock();
         }
     }
 
     //DEPOSIT AMOUNT
-    private static synchronized void depositAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
+    private static void depositAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
-        AccountDetails account=accountDetails.get(accountnum);
-        if(account!=null){
-            System.out.println("Enter amount to be deposited: ");
-            float amount=scanner.nextFloat();
-            scanner.nextLine();
+        lock.lock();
+        try{
+            AccountDetails account=accountDetails.get(accountnum);
+            if(account!=null){
+                System.out.println("Enter amount to be deposited: ");
+                float amount=scanner.nextFloat();
+                scanner.nextLine();
 
-            if(amount>0){
-                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()+amount).build();
-                accountDetails.put(accountnum,account);
-                System.out.println("\n**Amount Deposited Successfully**\n");
+                if(amount>0){
+                    account=AccountDetails.newBuilder(account).setBalance(account.getBalance()+amount).build();
+                    accountDetails.put(accountnum,account);
+                    System.out.println("\n**Amount Deposited Successfully**\n");
+                }else{
+                    System.out.println("Invalid amount");
+                }
             }else{
-                System.out.println("Invalid amount");
+                System.out.println("Account not found.");
             }
-        }else{
-            System.out.println("Account not found.");
+        }finally{
+            lock.unlock();
         }
     }
 
     //DEPOSIT AMOUNT TESTING
-    public static synchronized void depositAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
-        AccountDetails account=accountDetails.get(accountnum);
-        if(account!=null){
-            if(amount>0){
-                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()+amount).build();
-                accountDetails.put(accountnum,account);
-                System.out.println("\n**Amount Deposited Successfully**\n");
+    public static void depositAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+        lock.lock();
+        try{
+            AccountDetails account=accountDetails.get(accountnum);
+            if(account!=null){
+                if(amount>0){
+                    account=AccountDetails.newBuilder(account).setBalance(account.getBalance()+amount).build();
+                    accountDetails.put(accountnum,account);
+                    System.out.println("\n**Amount Deposited Successfully**\n");
+                }else{
+                    System.out.println("Invalid amount");
+                }
             }else{
-                System.out.println("Invalid amount");
+                System.out.println("Account not found.");
             }
-        }else{
-            System.out.println("Account not found.");
+        }finally{
+            lock.unlock();
         }
     }
 
     //WITHDRAW AMOUNT
-    private static synchronized void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
+    private static void withdrawAmount(Scanner scanner,Map<Integer,AccountDetails> accountDetails){
         System.out.println("Enter your account number: ");
         int accountnum=scanner.nextInt();
         scanner.nextLine();
-        AccountDetails account=accountDetails.get(accountnum);
-        if(account!=null){
-            System.out.println("Enter amount to be withdrawn: ");
-            float amount=scanner.nextFloat();
-            scanner.nextLine();
-            if(amount>0 && amount<=account.getBalance()){
-                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()-amount).build();
-                accountDetails.put(accountnum,account);
+        lock.lock();
+        try{
+            AccountDetails account=accountDetails.get(accountnum);
+            if(account!=null){
+                System.out.println("Enter amount to be withdrawn: ");
+                float amount=scanner.nextFloat();
+                scanner.nextLine();
+                if(amount>0 && amount<=account.getBalance()){
+                    account=AccountDetails.newBuilder(account).setBalance(account.getBalance()-amount).build();
+                    accountDetails.put(accountnum,account);
+                }else{
+                    System.out.println("Invalid amount");
+                }
             }else{
-                System.out.println("Invalid amount");
+                System.out.println("Account not found.");
             }
-        }else{
-            System.out.println("Account not found.");
+        }finally{
+            lock.unlock();
         }
     }
 
     //WITHDRAW AMOUNT TESTING
-    public static synchronized void withdrawAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
-        AccountDetails account=accountDetails.get(accountnum);
-        if(account!=null){
-            if(amount>0 && amount<=account.getBalance()){
-                account=AccountDetails.newBuilder(account).setBalance(account.getBalance()-amount).build();
-                accountDetails.put(accountnum,account);
+    public static void withdrawAmount(Map<Integer,AccountDetails> accountDetails,int accountnum,float amount){
+        lock.lock();
+        try{
+            AccountDetails account=accountDetails.get(accountnum);
+            if(account!=null){
+                if(amount>0 && amount<=account.getBalance()){
+                    account=AccountDetails.newBuilder(account).setBalance(account.getBalance()-amount).build();
+                    accountDetails.put(accountnum,account);
+                }else{
+                    System.out.println("Invalid amount");
+                }
             }else{
-                System.out.println("Invalid amount");
+                System.out.println("Account not found.");
             }
-        }else{
-            System.out.println("Account not found.");
+        }finally{
+            lock.unlock();
         }
     }
 
     //TRANSFER AMOUNT FROM ONE ACCOUNT TO ANOTHER
-    public static synchronized void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
+    public static void transferAmount(Scanner scanner,Map<Integer,AccountDetails>accountDetails){
         System.out.println("Enter your account no: ");
         int fromAccountNum=scanner.nextInt();
         scanner.nextLine();
-        AccountDetails fromAccount= accountDetails.get(fromAccountNum);
+        lock.lock();
+        try{
+            AccountDetails fromAccount= accountDetails.get(fromAccountNum);
 
-        if(fromAccount!=null){
-            System.out.println("Enter the recipient account no: ");
-            int toAccountNum=scanner.nextInt();
-            scanner.nextLine();
-            AccountDetails toAccount=accountDetails.get(toAccountNum);
+            if(fromAccount!=null){
+                System.out.println("Enter the recipient account no: ");
+                int toAccountNum=scanner.nextInt();
+                scanner.nextLine();
+                AccountDetails toAccount=accountDetails.get(toAccountNum);
 
-            if(toAccount!=null){
-                System.out.println("Enter the amount to transfer: ");
-                float amount=scanner.nextFloat();
+                if(toAccount!=null){
+                    System.out.println("Enter the amount to transfer: ");
+                    float amount=scanner.nextFloat();
 
-                if(amount>0 && amount<=fromAccount.getBalance()){
-                    fromAccount=AccountDetails.newBuilder(fromAccount).setBalance(fromAccount.getBalance()-amount).build();
-                    toAccount=AccountDetails.newBuilder(toAccount).setBalance(toAccount.getBalance()+amount).build();
-                    accountDetails.put(fromAccountNum,fromAccount);
-                    accountDetails.put(toAccountNum, toAccount);
-                    saveAccountDetails(accountDetails);
-                    System.out.println("\n---Amount has been transferred successfully---");
+                    if(amount>0 && amount<=fromAccount.getBalance()){
+                        fromAccount=AccountDetails.newBuilder(fromAccount).setBalance(fromAccount.getBalance()-amount).build();
+                        toAccount=AccountDetails.newBuilder(toAccount).setBalance(toAccount.getBalance()+amount).build();
+                        accountDetails.put(fromAccountNum,fromAccount);
+                        accountDetails.put(toAccountNum, toAccount);
+                        saveAccountDetails(accountDetails);
+                        System.out.println("\n---Amount has been transferred successfully---");
+                    }else{
+                        System.out.println("Insufficient funds or Invalid Amount");
+                    }
                 }else{
-                    System.out.println("Insufficient funds or Invalid Amount");
+                    System.out.println("Recipient account not found.");
                 }
             }else{
-                System.out.println("Recipient account not found.");
+                System.out.println("Invalid account number.");
             }
-        }else{
-            System.out.println("Invalid account number.");
+        }finally{
+            lock.unlock();
         }
     }
 
     //TRANSFER AMOUNT TESTING
     public static synchronized void transferAmount(Map<Integer,AccountDetails>accountDetails,int fromAccountNum,int toAccountNum,float amount){
-        AccountDetails fromAccount= accountDetails.get(fromAccountNum);
+        lock.lock();
+        try{
+            AccountDetails fromAccount= accountDetails.get(fromAccountNum);
 
-        if(fromAccount!=null){
-            AccountDetails toAccount=accountDetails.get(toAccountNum);
+            if(fromAccount!=null){
+                AccountDetails toAccount=accountDetails.get(toAccountNum);
 
-            if(toAccount!=null){
-                if(amount>0 && amount<=fromAccount.getBalance()){
-                    fromAccount=AccountDetails.newBuilder(fromAccount).setBalance(fromAccount.getBalance()-amount).build();
-                    toAccount=AccountDetails.newBuilder(toAccount).setBalance(toAccount.getBalance()+amount).build();
-                    accountDetails.put(fromAccountNum,fromAccount);
-                    accountDetails.put(toAccountNum, toAccount);
-                    saveAccountDetails(accountDetails);
-                    System.out.println("\n---Amount has been transferred successfully---");
+                if(toAccount!=null){
+                    if(amount>0 && amount<=fromAccount.getBalance()){
+                        fromAccount=AccountDetails.newBuilder(fromAccount).setBalance(fromAccount.getBalance()-amount).build();
+                        toAccount=AccountDetails.newBuilder(toAccount).setBalance(toAccount.getBalance()+amount).build();
+                        accountDetails.put(fromAccountNum,fromAccount);
+                        accountDetails.put(toAccountNum, toAccount);
+                        saveAccountDetails(accountDetails);
+                        System.out.println("\n---Amount has been transferred successfully---");
+                    }else{
+                        System.out.println("Insufficient funds or Invalid Amount");
+                    }
                 }else{
-                    System.out.println("Insufficient funds or Invalid Amount");
+                    System.out.println("Recipient account not found.");
                 }
             }else{
-                System.out.println("Recipient account not found.");
+                System.out.println("Invalid account number.");
             }
-        }else{
-            System.out.println("Invalid account number.");
+        }finally{
+            lock.unlock();
         }
     }
 
@@ -276,18 +321,22 @@ public class BankApp {
 
     //SAVE ACCOUNT DETAILS TO THE FILE
     public static void saveAccountDetails(Map<Integer, AccountDetails> accountDetails) {
+        lock.lock();
         try (FileOutputStream fos = new FileOutputStream(account_file_name)) {
             for (AccountDetails account : accountDetails.values()) {
                 account.writeDelimitedTo(fos);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally{
+            lock.unlock();
         }
     }
     
     
     //LOAD ACCOUNT DETAILS FROM THE FILE TO THE HASHMAP
     public static Map<Integer, AccountDetails> loadAccountDetails() {
+        lock.lock();
         Map<Integer, AccountDetails> accountDetails = new HashMap<>();
         try (FileInputStream fis = new FileInputStream(account_file_name)) {
             while (fis.available() > 0) {
@@ -298,6 +347,8 @@ public class BankApp {
             System.out.println("No existing data file found");
         } catch (IOException e) {
             e.printStackTrace();
+        }finally{
+            lock.unlock();
         }
         return accountDetails;
     }
