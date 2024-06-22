@@ -6,6 +6,9 @@ import com.app.Bank.AccountDetails;
 
 import java.util.*;
 import java.util.concurrent.locks.*;
+
+
+
 public class BankApp {
     private static final String account_file_name="/home/hpr/Protoexample/com/accountdetails.bin";
     private static final Object lock = new Object();
