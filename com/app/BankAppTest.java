@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class BankAppTest {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Map<Integer, AccountDetails> accountDetails = BankApp.loadAccountDetails();
         if (accountDetails.isEmpty()) {
             for (int i = 1; i <= 100; i++) {
@@ -109,5 +109,5 @@ public class BankAppTest {
             totalBalance += account.getBalance();
         }
         return totalBalance;
-    }
+    }*/
 }
