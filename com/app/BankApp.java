@@ -45,21 +45,21 @@ public class BankApp {
                 case 5:
                     System.out.print("Enter account number: ");
                     accountNumber = scanner.nextInt();
-                    System.out.print("Enter amount to be deposited: ");
+                    System.out.print("Enter amount to deposit: ");
                     float depositAmount = scanner.nextFloat();
                     user.deposit(accountNumber, depositAmount);
                     break;
                 case 6:
                     System.out.print("Enter account number: ");
                     accountNumber = scanner.nextInt();
-                    System.out.print("Enter amount to be withdrawn: ");
+                    System.out.print("Enter amount to withdraw: ");
                     float withdrawAmount = scanner.nextFloat();
                     user.withdraw(accountNumber, withdrawAmount);
                     break;
                 case 7:
                     System.out.print("Enter your account number: ");
                     int fromAccountNumber = scanner.nextInt();
-                    System.out.print("Enter the recipient account number: ");
+                    System.out.print("Enter recipient account number: ");
                     int toAccountNumber = scanner.nextInt();
                     System.out.print("Enter amount to transfer: ");
                     float transferAmount = scanner.nextFloat();
@@ -75,8 +75,9 @@ public class BankApp {
                 default:
                     System.out.println("Invalid choice.");
                     break;
-                }
             }
-            scanner.close();
-        }        
+        }
+
+        scanner.close();
+    }
 }

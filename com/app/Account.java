@@ -1,37 +1,43 @@
 package com.app;
 
-import java.io.Serializable;
+import com.app.Bank.AccountDetails;
 
-public class Account implements Serializable {
-    private static final long serialVersionUID = 1L;
-    
-    private int accountNumber;
-    private String name;
-    private float balance;
+public class Account {
+    private AccountDetails accountDetails;
 
     public Account(int accountNumber, String name, float balance) {
-        this.accountNumber = accountNumber;
-        this.name = name;
-        this.balance = balance;
+        this.accountDetails = AccountDetails.newBuilder()
+                .setAccountnumber(accountNumber)
+                .setName(name)
+                .setBalance(balance)
+                .build();
+    }
+
+    public Account(AccountDetails accountDetails) {
+        this.accountDetails = accountDetails;
     }
 
     public int getAccountNumber() {
-        return accountNumber;
+        return accountDetails.getAccountnumber();
     }
 
     public String getName() {
-        return name;
+        return accountDetails.getName();
     }
 
     public void setName(String name) {
-        this.name = name;
+        accountDetails = accountDetails.toBuilder().setName(name).build();
     }
 
     public float getBalance() {
-        return balance;
+        return accountDetails.getBalance();
     }
 
     public void setBalance(float balance) {
-        this.balance = balance;
+        accountDetails = accountDetails.toBuilder().setBalance(balance).build();
+    }
+
+    public AccountDetails getAccountDetails() {
+        return accountDetails;
     }
 }

@@ -1,7 +1,10 @@
 package com.app;
 
+import com.app.Bank.AccountDetails;
+
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class bank {
     private static final String ACCOUNT_FILE_NAME = "/home/hpr/Protoexample/com/accountdetails.bin";
@@ -128,23 +131,26 @@ public class bank {
 
     private void saveAccounts() {
         synchronized (lock) {
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ACCOUNT_FILE_NAME))) {
-                oos.writeObject(accounts);
+            try (FileOutputStream fos = new FileOutputStream(ACCOUNT_FILE_NAME)) {
+                for (Account account : accounts.values()) {
+                    account.getAccountDetails().writeDelimitedTo(fos);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void loadAccounts() {
         synchronized (lock) {
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ACCOUNT_FILE_NAME))) {
-                Map<Integer, Account> loadedAccounts = (Map<Integer, Account>) ois.readObject();
-                accounts.putAll(loadedAccounts);
+            try (FileInputStream fis = new FileInputStream(ACCOUNT_FILE_NAME)) {
+                while (fis.available() > 0) {
+                    AccountDetails accountDetails = AccountDetails.parseDelimitedFrom(fis);
+                    accounts.put(accountDetails.getAccountnumber(), new Account(accountDetails));
+                }
             } catch (FileNotFoundException e) {
                 System.out.println("No existing data file found.\n");
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
